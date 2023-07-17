@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.3.2">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2023-07-17T13:27:36+09:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Sagar G. Sangodkar</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.</subtitle><entry><title type="html">YOLO v1</title><link href="http://localhost:4000/yolo/2023/07/16/yolov1.html" rel="alternate" type="text/html" title="YOLO v1" /><published>2023-07-16T19:13:10+09:00</published><updated>2023-07-16T19:13:10+09:00</updated><id>http://localhost:4000/yolo/2023/07/16/yolov1</id><content type="html" xml:base="http://localhost:4000/yolo/2023/07/16/yolov1.html"><![CDATA[<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.3.2">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2023-07-17T19:34:09+09:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Sagar G. Sangodkar</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.</subtitle><entry><title type="html">YOLO v1</title><link href="http://localhost:4000/yolo/2023/07/16/yolov1.html" rel="alternate" type="text/html" title="YOLO v1" /><published>2023-07-16T19:13:10+09:00</published><updated>2023-07-16T19:13:10+09:00</updated><id>http://localhost:4000/yolo/2023/07/16/yolov1</id><content type="html" xml:base="http://localhost:4000/yolo/2023/07/16/yolov1.html"><![CDATA[<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
 <h1 id="yolo-algorithm">YOLO algorithm</h1>
 <p>The algorithm takes an input image and resizes it to a fixed size suitable for the neural network. 
@@ -6,7 +6,7 @@ The image is divided into an S x S grid, where each grid cell is responsible for
 The neural network then predicts the following two things for each grid cell:</p>
 <ol>
   <li>B number of bounding boxes. Each bounding box consists of 5 predictions: x, y, w, h, and confidence. The (x, y) coordinates represent the centre of the box relative to the bounds of the grid cell. The width and height are relative to the whole image. The confidence score reflects how confident the model is that the box contains an object and also how accurate it thinks the box is that it predicts.</li>
-  <li>C conditional class probabilities, \(Pr(Class_i|Object)\). These class probabilities represent the likelihood of each object belonging to different predefined C number of classes. These probabilities are conditioned on the grid cell containing an object, that is, the loss function only penalizes classification error if an object is present in that grid cell (more on this later while discussing the loss functions)
+  <li>c conditional class probabilities, \(Pr(Class_i|Object)\). These class probabilities represent the likelihood of each object belonging to different predefined C number of classes. These probabilities are conditioned on the grid cell containing an object, that is, the loss function only penalizes classification error if an object is present in that grid cell (more on this later while discussing the loss functions)
 <img src="/assets/yolov1/flow.png" alt="Algorithm Flow" /></li>
 </ol>
 
@@ -17,9 +17,76 @@ The neural network then predicts the following two things for each grid cell:</p
 <p>By combining object localization and classification into a single pass, YOLOv1 achieved real-time object detection capabilities.</p>
 
 <h1 id="network-architecture">Network Architecture:</h1>
-<p>The network architecture consists of a series of 24 convolutional layers followed by 2 fully connected layers.</p>
+<p>Let us now discuss the network architecture. The input to the network is an image resized to size 448x448x3. The network architecture consists of a series of 24 convolutional layers followed by 2 fully connected layers as shown below.</p>
 
-<p>The final output of our network is the S x S x (B*5+C) tensor of predictions., The authors use S = 7 and B =2 in the paper. The authors train and evaluate YOLO on PASCAL VOC dataset containing 20 labelled classes, so C = 20. Hence the final prediction is a 7x7x30 size tensor as shown in the above network figure.</p>]]></content><author><name></name></author><category term="yolo" /><summary type="html"><![CDATA[]]></summary></entry><entry><title type="html">Test Post</title><link href="http://localhost:4000/test/post/2023/07/16/hello-world.html" rel="alternate" type="text/html" title="Test Post" /><published>2023-07-16T19:13:10+09:00</published><updated>2023-07-16T19:13:10+09:00</updated><id>http://localhost:4000/test/post/2023/07/16/hello-world</id><content type="html" xml:base="http://localhost:4000/test/post/2023/07/16/hello-world.html"><![CDATA[<h1 id="welcome">Welcome</h1>
+<center> Table: Network Architecture YOLO v1 Details </center>
+<p><img src="/assets/yolov1/architecture_table.png" alt="Architecture Table" /></p>
+
+<p>Here the final output of the network is of size \(S*S*(B*5+c)\), which is then reshaped to <strong>SxSx(B*5+c)</strong> shaped tensor. The authors use S = 7 and B =2 in the paper. The authors train and evaluate YOLO on PASCAL VOC dataset containing 20 labelled classes, so c = 20. Hence the final prediction is a 7x7x30 size tensor as shown in the figure below.</p>
+
+<p><img src="/assets/yolov1/architecture.png" alt="Architecture" /></p>
+<center> Figure 2: Network Architecture YOLO v1 </center>
+
+<h1 id="loss-functions">Loss Functions</h1>
+<p>The loss function compare the network predictions with that of the groundtruth.
+As discussed previously, the network produces predicitons of length <strong>B*5+c</strong> for each grid cell, where B is the number of bounding boxes per grid cell, c is equal to the number of classes for which the detector is trained and 5 refers to the x, y, w, h, and confidence.</p>
+
+<p>The foss function consists of mainly two parts: localization loss and classification loss as shown below.</p>
+
+<p>Let us now try to understand the two parts one by one.</p>
+
+<p>The <strong>localization loss</strong> is obtained by comparing the x, y, w and h values with its groundtruth values.</p>
+
+<p>For each grid cell that contains an object’s center, the sum-squared loss of x, y, w, h is computed only for that one bounding box out of the B bounding boxes which has the best overlap (IoU) with the ground truth box. And the groundtruth for x, y, w, and h is obtained from the bounding box information of the ground truth box.</p>
+
+<p>Since the sum-squared error equally weights errors in large boxes and small boxes and since small deviations in large boxes matter less than in small boxes, the authors use the square root of the bounding box width and height instead of the width and height directly.</p>
+
+<p>The remaining bounding boxes in the same grid cell are treated as non-object predictions and the loss for x, y, w and h is not computed for such boxes.</p>
+
+<p>Mathematically, it can be defined as below:</p>
+
+<p><img src="/assets/yolov1/loc_1.png" alt="loc1" width="500" /></p>
+
+<p>where \(1^{obj}_{ij}\) is the indicator function which is 1 only for the jth bounding box in grid cell i which has best IoU with a ground truth box. And \(\lambda_{chord}\) denotes the scaling factor (set to 5) which weighs the loss from coordinate predictions more than the other parts.</p>
+
+<p>The classification loss is obtained by comparing the confidence scores and the class probabilities with its ground truth values.</p>
+
+<p>The ground truth for the confidence score is determined based on the presence or absence of an object within each grid cell. The ground truth confidence score is calculated as follows:</p>
+
+<ol>
+  <li>For each grid cell that contains an object, the confidence score for the bounding box with the best overlap (IoU - Intersection over Union) with the ground truth box is set to 1 (indicating the presence of an object). The remaining bounding boxes in the same grid cell are treated as background or non-object predictions and their confidence scores are set to 0 (indicating that they do not contain an object).</li>
+  <li>For grid cells that do not contain an object, the confidence score for all bounding box predictions is set to 0 (indicating the absence of an object).</li>
+</ol>
+
+<p>Having defined the ground truth for confidence scores, the sum-squared error of confindence scores is computed as below:</p>
+
+<p><img src="/assets/yolov1/classification_1.png" alt="classification1" width="500" /></p>
+
+<p>where \(\lambda_{noobj}\) denotes the scaling factor (set to 0.5) which decreases the loss from confidence predictions for boxes that don’t contain objects for model stability and C denotes the confidence score. (please don’t confuse with the c used to refer to class probabilities)</p>
+
+<p>The classification loss also consists of sum-squared error computed by comparing the c class probabilities as shown below:</p>
+
+<p><img src="/assets/yolov1/classification_2.png" alt="classification2" width="300" /></p>
+
+<p>where \(1^{obj}_{i}\) is the indicator function which is 1 only if an object’s center falls in grid cell i. And \(p^{i}s\) are the predicted class probabilities for each class.</p>
+
+<p>The total loss is the sum of all the above components.</p>
+
+<h1 id="training">Training</h1>
+<p>The authors pretrain the convolutional layers of the network on the ImageNet 1000-class competition dataset. For pretraining, the first 20 convolutional layers from Figure 2 are used, followed by a average-pooling layer and a fully connected layer. The model is then converted to perform detection by adding four convolutional layers and two fully connected layers with randomly initialized weights. Detection often requires fine-grained visual information so the input resolution of the network is increased from 224x224 to 448x448. A linear activation function is used for the final layer and all other layers use the following leaky rectified linear activation. The network is then trained for detection using the loss function described previously. The authors use various techniques such as dropout, extensive data augmentation and variable learning rate to avoid overfitting and model convergence.</p>
+
+<h1 id="inference">Inference</h1>
+<p>Predicting detections for a test image only requires one network evaluation. Hence YOLO is extremely fast at test time unlike classifier-based two stage detectors.</p>
+
+<p>As understood, YOLO makes several output predictions which may be redundant in most cases. Non-maximal supression is used to discard irrevalent predictions.</p>
+
+<h1 id="limitations-of-yolo-v1">Limitations of YOLO v1</h1>
+<ol>
+  <li>YOLOv1 suffers from a variety of shortcomings relative to state-of-the-art detection systems.</li>
+  <li>YOLOv1 makes a significant number of localization errors.</li>
+  <li>YOLOv1 has relatively low recall compared to region proposal-based methods.</li>
+  <li>YOLOv2 focuses mainly on improving recall and localization while maintaining classification accuracy.</li>
+</ol>]]></content><author><name></name></author><category term="yolo" /><summary type="html"><![CDATA[]]></summary></entry><entry><title type="html">Test Post</title><link href="http://localhost:4000/test/post/2023/07/16/hello-world.html" rel="alternate" type="text/html" title="Test Post" /><published>2023-07-16T19:13:10+09:00</published><updated>2023-07-16T19:13:10+09:00</updated><id>http://localhost:4000/test/post/2023/07/16/hello-world</id><content type="html" xml:base="http://localhost:4000/test/post/2023/07/16/hello-world.html"><![CDATA[<h1 id="welcome">Welcome</h1>
 
 <p><strong>Hello world</strong>, this is my first Jekyll blog post.</p>
 
