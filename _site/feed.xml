@@ -1,4 +1,133 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.3.2">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2023-07-16T19:18:51+09:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Your awesome title</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.</subtitle><entry><title type="html">Welcome to Jekyll!</title><link href="http://localhost:4000/jekyll/update/2023/07/16/welcome-to-jekyll.html" rel="alternate" type="text/html" title="Welcome to Jekyll!" /><published>2023-07-16T19:13:10+09:00</published><updated>2023-07-16T19:13:10+09:00</updated><id>http://localhost:4000/jekyll/update/2023/07/16/welcome-to-jekyll</id><content type="html" xml:base="http://localhost:4000/jekyll/update/2023/07/16/welcome-to-jekyll.html"><![CDATA[<p>You’ll find this post in your <code class="language-plaintext highlighter-rouge">_posts</code> directory. Go ahead and edit it and re-build the site to see your changes. You can rebuild the site in many different ways, but the most common way is to run <code class="language-plaintext highlighter-rouge">jekyll serve</code>, which launches a web server and auto-regenerates your site when a file is updated.</p>
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.3.2">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2023-07-17T13:27:36+09:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Sagar G. Sangodkar</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.</subtitle><entry><title type="html">YOLO v1</title><link href="http://localhost:4000/yolo/2023/07/16/yolov1.html" rel="alternate" type="text/html" title="YOLO v1" /><published>2023-07-16T19:13:10+09:00</published><updated>2023-07-16T19:13:10+09:00</updated><id>http://localhost:4000/yolo/2023/07/16/yolov1</id><content type="html" xml:base="http://localhost:4000/yolo/2023/07/16/yolov1.html"><![CDATA[<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+<h1 id="yolo-algorithm">YOLO algorithm</h1>
+<p>The algorithm takes an input image and resizes it to a fixed size suitable for the neural network. 
+The image is divided into an S x S grid, where each grid cell is responsible for predicting objects.
+The neural network then predicts the following two things for each grid cell:</p>
+<ol>
+  <li>B number of bounding boxes. Each bounding box consists of 5 predictions: x, y, w, h, and confidence. The (x, y) coordinates represent the centre of the box relative to the bounds of the grid cell. The width and height are relative to the whole image. The confidence score reflects how confident the model is that the box contains an object and also how accurate it thinks the box is that it predicts.</li>
+  <li>C conditional class probabilities, \(Pr(Class_i|Object)\). These class probabilities represent the likelihood of each object belonging to different predefined C number of classes. These probabilities are conditioned on the grid cell containing an object, that is, the loss function only penalizes classification error if an object is present in that grid cell (more on this later while discussing the loss functions)
+<img src="/assets/yolov1/flow.png" alt="Algorithm Flow" /></li>
+</ol>
+
+<p>This results in several predictions which are then refined using a technique called Non-Maximum Suppression (NMS). NMS eliminates redundant and overlapping bounding boxes. [TODO: Describe it more]</p>
+
+<p><strong>Output</strong>: The final output of the algorithm is a list of bounding boxes, each associated with a class label and a confidence score. These bounding boxes represent the detected objects in the input image.</p>
+
+<p>By combining object localization and classification into a single pass, YOLOv1 achieved real-time object detection capabilities.</p>
+
+<h1 id="network-architecture">Network Architecture:</h1>
+<p>The network architecture consists of a series of 24 convolutional layers followed by 2 fully connected layers.</p>
+
+<p>The final output of our network is the S x S x (B*5+C) tensor of predictions., The authors use S = 7 and B =2 in the paper. The authors train and evaluate YOLO on PASCAL VOC dataset containing 20 labelled classes, so C = 20. Hence the final prediction is a 7x7x30 size tensor as shown in the above network figure.</p>]]></content><author><name></name></author><category term="yolo" /><summary type="html"><![CDATA[]]></summary></entry><entry><title type="html">Test Post</title><link href="http://localhost:4000/test/post/2023/07/16/hello-world.html" rel="alternate" type="text/html" title="Test Post" /><published>2023-07-16T19:13:10+09:00</published><updated>2023-07-16T19:13:10+09:00</updated><id>http://localhost:4000/test/post/2023/07/16/hello-world</id><content type="html" xml:base="http://localhost:4000/test/post/2023/07/16/hello-world.html"><![CDATA[<h1 id="welcome">Welcome</h1>
+
+<p><strong>Hello world</strong>, this is my first Jekyll blog post.</p>
+
+<p>I hope you like it!</p>
+
+<p>To add an image, place in image in assets folder in the root directory [not inside assets subfolder folder present in _site folder].</p>
+
+<p><img src="/assets/hello-world.png" alt="Hello World" /></p>]]></content><author><name></name></author><category term="test" /><category term="post" /><summary type="html"><![CDATA[Welcome]]></summary></entry><entry><title type="html">Jekyll Docs</title><link href="http://localhost:4000/jekyll%20docs/2023/07/16/jekyll-guide.html" rel="alternate" type="text/html" title="Jekyll Docs" /><published>2023-07-16T19:13:10+09:00</published><updated>2023-07-16T19:13:10+09:00</updated><id>http://localhost:4000/jekyll%20docs/2023/07/16/jekyll-guide</id><content type="html" xml:base="http://localhost:4000/jekyll%20docs/2023/07/16/jekyll-guide.html"><![CDATA[<h1 id="welcome">Welcome</h1>
+
+<p><strong>Hello world</strong>, this are some important guides for creating jekyll website.</p>
+
+<p>I hope you like it!</p>
+
+<p>To add an image, place in image in assets folder in the root directory [not inside assets subfolder folder present in _site folder].</p>
+
+<p><img src="/assets/hello-world.png" alt="Hello World" /></p>
+
+<h1 id="displaying-an-index-of-posts">Displaying an index of posts</h1>
+<ul>
+  
+    <li>
+        <a href="/yolo/2023/07/16/yolov1.html">YOLO v1</a>
+    </li>
+  
+    <li>
+        <a href="/jekyll/update/2023/07/16/welcome-to-jekyll.html">Welcome to Jekyll!</a>
+    </li>
+  
+    <li>
+        <a href="/jekyll%20docs/2023/07/16/jekyll-guide.html">Jekyll Docs</a>
+    </li>
+  
+    <li>
+        <a href="/test/post/2023/07/16/hello-world.html">Test Post</a>
+    </li>
+  
+</ul>
+
+<h3>test</h3>
+<ul>
+    
+      <li><a href="/test/post/2023/07/16/hello-world.html">Test Post</a></li>
+    
+  </ul>
+
+<h3>post</h3>
+<ul>
+    
+      <li><a href="/test/post/2023/07/16/hello-world.html">Test Post</a></li>
+    
+  </ul>
+
+<h3>jekyll docs</h3>
+<ul>
+    
+      <li><a href="/jekyll%20docs/2023/07/16/jekyll-guide.html">Jekyll Docs</a></li>
+    
+  </ul>
+
+<h3>jekyll</h3>
+<ul>
+    
+      <li><a href="/jekyll/update/2023/07/16/welcome-to-jekyll.html">Welcome to Jekyll!</a></li>
+    
+  </ul>
+
+<h3>update</h3>
+<ul>
+    
+      <li><a href="/jekyll/update/2023/07/16/welcome-to-jekyll.html">Welcome to Jekyll!</a></li>
+    
+  </ul>
+
+<h3>yolo</h3>
+<ul>
+    
+      <li><a href="/yolo/2023/07/16/yolov1.html">YOLO v1</a></li>
+    
+  </ul>
+
+<p>For more information about Jekyll posts, chekout the official <a href="https://jekyllrb.com/docs/posts/">Jekyll posts documentation</a>.</p>
+
+<h1 id="collections">Collections</h1>
+<p>Collections are helpful to group related content.</p>
+
+<h1 id="writing-latex-in-jekyll-posts">Writing Latex in Jekyll posts</h1>
+<p>To include LaTeX equations in a Jekyll blog post, you can use MathJax, which is a JavaScript library that renders mathematical equations on web pages.</p>
+
+<p>Here’s how you can set it up:</p>
+
+<ol>
+  <li>
+    <p>Include MathJax in your Jekyll blog’s layout or template file. You can do this by adding the following code in the &lt;head&gt; section of your layout file or the specific page where you want to display equations: <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>. This code includes the MathJax library from a Content Delivery Network (CDN). It’s recommended to use a CDN for optimal performance, but you can also download MathJax and include it locally if desired.</p>
+  </li>
+  <li>
+    <p>Configure MathJax to recognize and render LaTeX equations. Create a configuration file called _config.yml in the root directory of your Jekyll project if it doesn’t exist already. Add the following lines to the file:</p>
+  </li>
+</ol>
+
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="ss">markdown: </span><span class="n">kramdown</span>
+<span class="ss">kramdown:
+  math_engine: </span><span class="n">mathjax</span></code></pre></figure>
+
+<p>This configuration tells Jekyll to use the Kramdown Markdown engine with MathJax as the math rendering engine.</p>
+
+<ol>
+  <li>Now you can write LaTeX equations in your blog posts using the appropriate syntax. Surround your equations with $$ or ( and ) for inline equations, and with [ and ] for displayed equations.</li>
+</ol>]]></content><author><name></name></author><category term="jekyll docs" /><summary type="html"><![CDATA[Welcome]]></summary></entry><entry><title type="html">Welcome to Jekyll!</title><link href="http://localhost:4000/jekyll/update/2023/07/16/welcome-to-jekyll.html" rel="alternate" type="text/html" title="Welcome to Jekyll!" /><published>2023-07-16T19:13:10+09:00</published><updated>2023-07-16T19:13:10+09:00</updated><id>http://localhost:4000/jekyll/update/2023/07/16/welcome-to-jekyll</id><content type="html" xml:base="http://localhost:4000/jekyll/update/2023/07/16/welcome-to-jekyll.html"><![CDATA[<p>You’ll find this post in your <code class="language-plaintext highlighter-rouge">_posts</code> directory. Go ahead and edit it and re-build the site to see your changes. You can rebuild the site in many different ways, but the most common way is to run <code class="language-plaintext highlighter-rouge">jekyll serve</code>, which launches a web server and auto-regenerates your site when a file is updated.</p>
 
 <p>Jekyll requires blog post files to be named according to the following format:</p>
 

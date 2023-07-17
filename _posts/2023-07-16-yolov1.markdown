@@ -1,0 +1,30 @@
+---
+layout: post
+title:  "YOLO v1"
+date:   2023-07-16 19:13:10 +0900
+categories: yolo
+---
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+# YOLO algorithm
+The algorithm takes an input image and resizes it to a fixed size suitable for the neural network. 
+The image is divided into an S x S grid, where each grid cell is responsible for predicting objects.
+The neural network then predicts the following two things for each grid cell:
+1.	B number of bounding boxes. Each bounding box consists of 5 predictions: x, y, w, h, and confidence. The (x, y) coordinates represent the centre of the box relative to the bounds of the grid cell. The width and height are relative to the whole image. The confidence score reflects how confident the model is that the box contains an object and also how accurate it thinks the box is that it predicts.
+2.	C conditional class probabilities, $$ Pr(Class_i|Object) $$. These class probabilities represent the likelihood of each object belonging to different predefined C number of classes. These probabilities are conditioned on the grid cell containing an object, that is, the loss function only penalizes classification error if an object is present in that grid cell (more on this later while discussing the loss functions)
+![Algorithm Flow](/assets/yolov1/flow.png)
+
+This results in several predictions which are then refined using a technique called Non-Maximum Suppression (NMS). NMS eliminates redundant and overlapping bounding boxes. [TODO: Describe it more]
+
+**Output**: The final output of the algorithm is a list of bounding boxes, each associated with a class label and a confidence score. These bounding boxes represent the detected objects in the input image.
+
+By combining object localization and classification into a single pass, YOLOv1 achieved real-time object detection capabilities.
+
+
+# Network Architecture:
+The network architecture consists of a series of 24 convolutional layers followed by 2 fully connected layers.
+
+The final output of our network is the S x S x (B*5+C) tensor of predictions., The authors use S = 7 and B =2 in the paper. The authors train and evaluate YOLO on PASCAL VOC dataset containing 20 labelled classes, so C = 20. Hence the final prediction is a 7x7x30 size tensor as shown in the above network figure.
