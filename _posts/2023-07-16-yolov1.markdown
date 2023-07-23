@@ -17,11 +17,11 @@ The neural network then predicts the following two things for each grid cell:
 2.	c conditional class probabilities, $$ Pr(Class_i|Object) $$. These class probabilities represent the likelihood of each object belonging to different predefined C number of classes. These probabilities are conditioned on the grid cell containing an object, that is, the loss function only penalizes classification error if an object is present in that grid cell (more on this later while discussing the loss functions)
 ![Algorithm Flow](/assets/yolov1/flow.png)
 
-This results in several predictions which are then refined using a technique called Non-Maximum Suppression (NMS). NMS eliminates redundant and overlapping bounding boxes. [TODO: Describe it more]
+This results in several predictions which are then refined using a technique called Non-Maximum Suppression (NMS). NMS eliminates redundant and overlapping bounding boxes.
 
 **Output**: The final output of the algorithm is a list of bounding boxes, each associated with a class label and a confidence score. These bounding boxes represent the detected objects in the input image.
 
-By combining object localization and classification into a single pass, YOLOv1 achieved real-time object detection capabilities.
+By combining object localization and classification into a single shot, YOLOv1 achieved real-time object detection capabilities.
 
 
 # Network Architecture:
@@ -35,17 +35,22 @@ Here the final output of the network is of size $$ S*S*(B*5+c) $$, which is then
 ![Architecture](/assets/yolov1/architecture.png)
 <center> Figure 2: Network Architecture YOLO v1 </center>
 
+
 # Loss Functions
 The loss function compare the network predictions with that of the groundtruth.
-As discussed previously, the network produces predicitons of length **B*5+c** for each grid cell, where B is the number of bounding boxes per grid cell, c is equal to the number of classes for which the detector is trained and 5 refers to the x, y, w, h, and confidence.
+As discussed previously, the network produces predictions of length **B*5+c** for each grid cell, where B is the number of bounding boxes per grid cell, c is equal to the number of classes for which the detector is trained and 5 refers to the x, y, w, h, and confidence.
 
 The foss function consists of mainly two parts: localization loss and classification loss as shown below. 
 
 Let us now try to understand the two parts one by one.
 
+## A) Localization Loss
+
 The **localization loss** is obtained by comparing the x, y, w and h values with its groundtruth values.
 
-For each grid cell that contains an object's center, the sum-squared loss of x, y, w, h is computed only for that one bounding box out of the B bounding boxes which has the best overlap (IoU) with the ground truth box. And the groundtruth for x, y, w, and h is obtained from the bounding box information of the ground truth box. 
+For each grid cell that contains an object's center, the sum-squared loss of x, y, w, h is computed only for that one bounding box out of the B bounding boxes which has the best overlap (IoU) with any of the ground truth box. And the groundtruth for x, y, w, and h is obtained from the bounding box information of that ground truth box. 
+
+Draw an image.
 
 Since the sum-squared error equally weights errors in large boxes and small boxes and since small deviations in large boxes matter less than in small boxes, the authors use the square root of the bounding box width and height instead of the width and height directly.
 
@@ -55,16 +60,16 @@ Mathematically, it can be defined as below:
 
 ![loc1](/assets/yolov1/loc_1.png){: width="500" }
 
-where $$ 1^{obj}_{ij} $$ is the indicator function which is 1 only for the jth bounding box in grid cell i which has best IoU with a ground truth box. And $$ \lambda_{chord} $$ denotes the scaling factor (set to 5) which weighs the loss from coordinate predictions more than the other parts.
+where $$ 1^{obj}_{ij} $$ is an indicator function which is 1 only for the jth bounding box in grid cell i which has best IoU with a ground truth box. And $$ \lambda_{chord} $$ denotes the scaling factor (set to 5) which weighs the loss from coordinate predictions more than the other parts.
 
-The classification loss is obtained by comparing the confidence scores and the class probabilities with its ground truth values.
+The **classification loss** is obtained by comparing the confidence scores and the class probabilities with its ground truth values.
 
 The ground truth for the confidence score is determined based on the presence or absence of an object within each grid cell. The ground truth confidence score is calculated as follows:
 
-1. For each grid cell that contains an object, the confidence score for the bounding box with the best overlap (IoU - Intersection over Union) with the ground truth box is set to 1 (indicating the presence of an object). The remaining bounding boxes in the same grid cell are treated as background or non-object predictions and their confidence scores are set to 0 (indicating that they do not contain an object).
+1. For each grid cell that contains an object, the confidence score for the bounding box with the best overlap (IoU - Intersection over Union) with a ground truth box is set to 1 (indicating the presence of an object). The remaining bounding boxes in the same grid cell are treated as background or non-object predictions and their confidence scores are set to 0 (indicating that they do not contain an object).
 2. For grid cells that do not contain an object, the confidence score for all bounding box predictions is set to 0 (indicating the absence of an object).
 
-Having defined the ground truth for confidence scores, the sum-squared error of confindence scores is computed as below:
+Having defined the ground truth for confidence scores, the sum-squared error of confidence scores is computed as below:
 
 ![classification1](/assets/yolov1/classification_1.png){: width="500"}
 
@@ -74,13 +79,15 @@ The classification loss also consists of sum-squared error computed by comparing
 
 ![classification2](/assets/yolov1/classification_2.png){: width="300" }
 
-where $$ 1^{obj}_{i} $$ is the indicator function which is 1 only if an object's center falls in grid cell i. And $$ p^{i}s $$ are the predicted class probabilities for each class.
+where $$ 1^{obj}_{i} $$ is the indicator function which is 1 only if an object's center falls in grid cell i. And $$ p_{i}s $$ are the predicted class probabilities for each class.
 
 The total loss is the sum of all the above components.
 
 
 # Training
-The authors pretrain the convolutional layers of the network on the ImageNet 1000-class competition dataset. For pretraining, the first 20 convolutional layers from Figure 2 are used, followed by a average-pooling layer and a fully connected layer. The model is then converted to perform detection by adding four convolutional layers and two fully connected layers with randomly initialized weights. Detection often requires fine-grained visual information so the input resolution of the network is increased from 224x224 to 448x448. A linear activation function is used for the final layer and all other layers use the following leaky rectified linear activation. The network is then trained for detection using the loss function described previously. The authors use various techniques such as dropout, extensive data augmentation and variable learning rate to avoid overfitting and model convergence.
+The authors pretrain the convolutional layers of the network on the ImageNet 1000-class competition dataset. For pretraining, the first 20 convolutional layers from Figure 2 are used, followed by a average-pooling layer and a fully connected layer. 
+
+The model is then converted to perform detection by adding four convolutional layers and two fully connected layers with randomly initialized weights. Detection often requires fine-grained visual information so the input resolution of the network is increased from 224x224 to 448x448. A linear activation function is used for the final layer and all other layers use the following leaky rectified linear activation. The network is then trained for detection using the loss function described previously. The authors use various techniques such as dropout, extensive data augmentation and variable learning rate to avoid overfitting and model convergence.
 
 
 # Inference
