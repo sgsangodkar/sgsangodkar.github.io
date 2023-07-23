@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "YOLO v1"
+title:  "YOLO (You Only Look Once) | Object Detection | v1"
 date:   2023-07-16 19:13:10 +0900
 categories: yolo
 ---
@@ -48,7 +48,7 @@ Let us now try to understand the two parts one by one.
 
 The **localization loss** is obtained by comparing the x, y, w and h values with its groundtruth values.
 
-For each grid cell that contains an object's center, the sum-squared loss of x, y, w, h is computed only for that one bounding box out of the B bounding boxes which has the best overlap (IoU) with any of the ground truth box. And the groundtruth for x, y, w, and h is obtained from the bounding box information of that ground truth box. 
+For each grid cell that contains an object's center, the sum-squared loss of x, y, w, h is computed only for that one bounding box out of the B bounding boxes which has the best overlap (IoU) with any of the ground truth box (as shown in the animated figure below). And the groundtruth for x, y, w, and h is obtained from the bounding box information of that ground truth box. 
 
 ![gif1](/assets/yolov1/gif1.gif)
 
