@@ -44,13 +44,14 @@ The foss function consists of mainly two parts: localization loss and classifica
 
 Let us now try to understand the two parts one by one.
 
-## A) Localization Loss
+**A) Localization Loss**
 
 The **localization loss** is obtained by comparing the x, y, w and h values with its groundtruth values.
 
 For each grid cell that contains an object's center, the sum-squared loss of x, y, w, h is computed only for that one bounding box out of the B bounding boxes which has the best overlap (IoU) with any of the ground truth box. And the groundtruth for x, y, w, and h is obtained from the bounding box information of that ground truth box. 
 
 Draw an image.
+![gif](/assets/misc/gif1.gif)
 
 Since the sum-squared error equally weights errors in large boxes and small boxes and since small deviations in large boxes matter less than in small boxes, the authors use the square root of the bounding box width and height instead of the width and height directly.
 
@@ -62,7 +63,9 @@ Mathematically, it can be defined as below:
 
 where $$ 1^{obj}_{ij} $$ is an indicator function which is 1 only for the jth bounding box in grid cell i which has best IoU with a ground truth box. And $$ \lambda_{chord} $$ denotes the scaling factor (set to 5) which weighs the loss from coordinate predictions more than the other parts.
 
-The **classification loss** is obtained by comparing the confidence scores and the class probabilities with its ground truth values.
+**B) Classification Loss**
+
+The **classification loss** is obtained by comparing the confidence score and the class probabilities with its ground truth values.
 
 The ground truth for the confidence score is determined based on the presence or absence of an object within each grid cell. The ground truth confidence score is calculated as follows:
 
