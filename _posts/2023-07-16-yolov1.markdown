@@ -50,7 +50,7 @@ The **localization loss** is obtained by comparing the x, y, w and h values with
 
 For each grid cell that contains an object's center, the sum-squared loss of x, y, w, h is computed only for that one bounding box out of the B bounding boxes which has the best overlap (IoU) with any of the ground truth box. And the groundtruth for x, y, w, and h is obtained from the bounding box information of that ground truth box. 
 
-<iframe src="https://giphy.com/embed/z0OdJLQ4tG21hAqhYx" width="480" height="478" frameBorder="0" class="giphy-embed" allowFullScreen></iframe><p><a href="https://giphy.com/gifs/z0OdJLQ4tG21hAqhYx">via GIPHY</a></p>
+![gif1](/assets/yolov1/gif1.gif)
 
 Since the sum-squared error equally weights errors in large boxes and small boxes and since small deviations in large boxes matter less than in small boxes, the authors use the square root of the bounding box width and height instead of the width and height directly.
 
@@ -81,7 +81,7 @@ The classification loss also consists of sum-squared error computed by comparing
 
 ![classification2](/assets/yolov1/classification_2.png){: width="300" }
 
-where $$ 1^{obj}_{i} $$ is the indicator function which is 1 only if an object's center falls in grid cell i. And $$ p_{i}s $$ are the predicted class probabilities for each class.
+where $$ 1^{obj}_{i} $$ is an indicator function which is 1 only if an object's center falls in grid cell i. And $$ p_{i}s $$ are the predicted class probabilities for each class.
 
 The total loss is the sum of all the above components.
 
@@ -102,3 +102,5 @@ As understood, YOLO makes several output predictions which may be redundant in m
 2. YOLOv1 makes a significant number of localization errors.
 3. YOLOv1 has relatively low recall compared to region proposal-based methods. 
 4. YOLOv2 focuses mainly on improving recall and localization while maintaining classification accuracy.
+
+# References
