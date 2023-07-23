@@ -104,3 +104,6 @@ As understood, YOLO makes several output predictions which may be redundant in m
 4. YOLOv2 focuses mainly on improving recall and localization while maintaining classification accuracy.
 
 # References
+Redmon, J. et al., 2016. [You Only Look Once: Unified, Real-Time Object Detection][yolov1]. In 2016 IEEE Conference on Computer Vision and Pattern Recognition (CVPR). pp. 779–788.
+
+[yolov1]: https://www.cv-foundation.org/openaccess/content_cvpr_2016/papers/Redmon_You_Only_Look_CVPR_2016_paper.pdf
