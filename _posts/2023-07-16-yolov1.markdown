@@ -50,8 +50,7 @@ The **localization loss** is obtained by comparing the x, y, w and h values with
 
 For each grid cell that contains an object's center, the sum-squared loss of x, y, w, h is computed only for that one bounding box out of the B bounding boxes which has the best overlap (IoU) with any of the ground truth box. And the groundtruth for x, y, w, and h is obtained from the bounding box information of that ground truth box. 
 
-Draw an image.
-![gif](/assets/misc/gif1.gif)
+<iframe src="https://giphy.com/embed/z0OdJLQ4tG21hAqhYx" width="480" height="478" frameBorder="0" class="giphy-embed" allowFullScreen></iframe><p><a href="https://giphy.com/gifs/z0OdJLQ4tG21hAqhYx">via GIPHY</a></p>
 
 Since the sum-squared error equally weights errors in large boxes and small boxes and since small deviations in large boxes matter less than in small boxes, the authors use the square root of the bounding box width and height instead of the width and height directly.
 
